@@ -35,4 +35,22 @@ Ensure you have the following installed on your system:
 ```bash
 git clone <repository_url>
 cd <repository_directory>
+```
 
+### 3. Install Dependencies
+
+```bash
+yarn install
+```
+
+### 4. Run the Development Server
+
+```bash
+yarn dev
+```
+### 5. Open the Application
+
+After running the server, open your browser and navigate to:
+```bash
+http://localhost:5173
+```
