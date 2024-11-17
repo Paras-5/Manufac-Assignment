@@ -7390,7 +7390,7 @@ export const fetchRawCropData = (): RawCropData[] => {
 ];
 };
 
-// Helper function to sanitize inputs and convert them to numbers
+// Helper function to safely convert to number
 const sanitizeToNumber = (value: any): number => {
   const num = Number(value);
   return isNaN(num) ? 0 : num; // Default to 0 if conversion fails
@@ -7399,19 +7399,20 @@ const sanitizeToNumber = (value: any): number => {
 // Preprocess raw data to match the expected CropData format
 export const preprocessData = (rawData: RawCropData[]): CropData[] => {
   return rawData.map((entry) => {
-    // Extract year from the "Year" field, fallback to 0 if parsing fails
+    // Extract year from "Year" field, fallback to 0 if parsing fails
     const yearMatch = entry.Year.match(/\d{4}/);
-    const year = yearMatch ? parseInt(yearMatch[0]) : 0;
+    const year = yearMatch ? parseInt(yearMatch[0], 10) : 0;
 
     return {
       year,
-      crop: entry["Crop Name"] || "Unknown Crop", // Handle missing crop names
-      production: sanitizeToNumber(entry["Crop Production (UOM:t(Tonnes))"]), // Safely convert to number
-      yield: sanitizeToNumber(entry["Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))"]), // Safely convert to number
-      cultivationArea: sanitizeToNumber(entry["Area Under Cultivation (UOM:Ha(Hectares))"]), // Safely convert to number
+      crop: entry["Crop Name"]?.trim() || "Unknown Crop", // Handle missing or empty crop names
+      production: sanitizeToNumber(entry["Crop Production (UOM:t(Tonnes))"]),
+      yield: sanitizeToNumber(entry["Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))"]),
+      cultivationArea: sanitizeToNumber(entry["Area Under Cultivation (UOM:Ha(Hectares))"]),
     };
   });
 };
+
 
 // Main function to fetch processed data
 export const fetchProcessedCropData = (): CropData[] => {
